@@ -8,12 +8,12 @@ import tensorflow as tf
 import numpy as np
 import os
 
-from .GlimpseNetwork import GlimpseNetwork, LocNet
-from .Logger         import Logger
-from .src.custom_multiRNNCell import MyMultiRNNCell
-from .src.utils      import *
-from .src.fig        import plot_glimpses, plot_trajectories
-from .data_generator import *
+from GlimpseNetwork import GlimpseNetwork, LocNet
+from Logger         import Logger
+from src.custom_multiRNNCell import MyMultiRNNCell
+from src.utils      import *
+from src.fig        import plot_glimpses, plot_trajectories
+from data_generator import *
 
 # tensorflow version switch
 rnn_cell    = tf.contrib.rnn

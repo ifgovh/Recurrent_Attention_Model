@@ -12,10 +12,10 @@ import numpy as np
 import argparse
 from datetime import datetime
 import pickle
-from .RAM import RAM
+from RAM import RAM
 # from DRAM import DRAM
 # from DRAM_loc import DRAMl
-from .config import Config
+from config import Config
 
 from tensorflow.examples.tutorials.mnist import input_data
 
@@ -51,11 +51,11 @@ if __name__ == '__main__':
     time_str = datetime.now().strftime('%H%M%S')
 
     if FLAGS.model == 'ram':
-        from .config import Config
+        from config import Config
     elif FLAGS.model == 'dram':
-        from .config_dram import Config
+        from config_dram import Config
     elif FLAGS.model == 'dram_loc':
-        from .config_dram import Config
+        from config_dram import Config
     else:
         print(('Unknown model {}'.format(FLAGS.model)))
         exit()

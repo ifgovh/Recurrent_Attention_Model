@@ -24,8 +24,8 @@ Partly inspired by https://github.com/zhongwen/RAM/blob/master/glimpse.py
 
 import numpy        as np
 import tensorflow   as tf
-from .config import Config
-from .src.utils import *
+from config import Config
+from src.utils import *
 
 
 class GlimpseNetwork(object):

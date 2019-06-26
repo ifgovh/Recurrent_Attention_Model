@@ -15,11 +15,11 @@ import os
 import argparse
 from   datetime import datetime
 import pickle
-from .RAM        import RAM
-from .DRAM       import DRAM
-from .DRAM_loc   import DRAMl
-from .config     import Config
-from .src.utils  import evaluate_repeatedly
+from RAM        import RAM
+from DRAM       import DRAM
+from DRAM_loc   import DRAMl
+from config     import Config
+from src.utils  import evaluate_repeatedly
 
 from tensorflow.examples.tutorials.mnist import input_data
 
@@ -259,11 +259,11 @@ def evaluate_numglimpses(model='dram_loc', visualize=False, N=10):
 if __name__ == '__main__':
 
     if FLAGS.model == 'ram':
-        from .config import Config
+        from config import Config
     elif FLAGS.model == 'dram':
-        from .config_dram import Config
+        from config_dram import Config
     elif FLAGS.model == 'dram_loc':
-        from .config_dram import Config
+        from config_dram import Config
     else:
         print('Unknown model {}'.format(FLAGS.model))
         exit()

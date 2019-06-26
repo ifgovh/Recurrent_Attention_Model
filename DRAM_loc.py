@@ -8,12 +8,12 @@ import tensorflow as tf
 import numpy as np
 import os
 
-from .Logger         import Logger
-from .src.losses     import location_loss
-from .src.custom_multiRNNCell import MyMultiRNNCell
-from .src.utils      import *
-from .src.fig        import plot_glimpses, plot_trajectories
-from .data_generator import *
+from Logger         import Logger
+from src.losses     import location_loss
+from src.custom_multiRNNCell import MyMultiRNNCell
+from src.utils      import *
+from src.fig        import plot_glimpses, plot_trajectories
+from data_generator import *
 
 # tensorflow version switch
 rnn_cell    = tf.contrib.rnn
@@ -29,10 +29,10 @@ class DRAMl(object):
 
         if self.config.convnet:
             print('Glimpse sensor is Convnet.')
-            from .ConvNet import GlimpseNetwork, LocNet          # glimpse net is conv net
+            from ConvNet import GlimpseNetwork, LocNet          # glimpse net is conv net
         else:
             print('Glimpse sensor is fully connected.')
-            from .GlimpseNetwork import GlimpseNetwork, LocNet   # glimpse net if fully connected
+            from GlimpseNetwork import GlimpseNetwork, LocNet   # glimpse net if fully connected
 
         # ---- ensure correct parameters ----
         if self.config.color_digits or self.config.color_noise:
