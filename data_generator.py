@@ -13,7 +13,7 @@ matplotlib.use('Agg')
 import numpy as np
 import tensorflow as tf
 import  matplotlib.pyplot as plt
-from src.fig import create_bbox
+from .src.fig import create_bbox
 
 def translate(batch, width=60, height=60):
     """Inserts MNIST digits at random locations in larger blank background."""
@@ -282,8 +282,8 @@ def plot_samples(X, locations, bboxes, nb_distractors, grid=(4,4), plot_bboxes=F
 if __name__ == '__main__':
     from tensorflow.examples.tutorials.mnist import input_data
     import  matplotlib.pyplot as plt
-    from    GlimpseNetwork import *
-    from src.fig import create_bbox
+    from    .GlimpseNetwork import *
+    from .src.fig import create_bbox
     import cv2
 
     data = input_data.read_data_sets('MNIST_data', one_hot=True)

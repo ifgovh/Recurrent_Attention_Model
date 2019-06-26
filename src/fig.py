@@ -103,10 +103,10 @@ def plot_glimpses(config=None, glimpse_images=[], pred_labels=[], probs=[], samp
             # 3. plot probabilities
             if probs != []:
                 if glimpseI < config.num_glimpses:
-                    cur_ax[-1].bar(range(10), probs[i, glimpseI, :], color='b')
+                    cur_ax[-1].bar(list(range(10)), probs[i, glimpseI, :], color='b')
                     cur_ax[-1].set_aspect(3)
                     cur_ax[-1].set_ylim((0, 1))
-                    cur_ax[-1].set_xticks(range(10))
+                    cur_ax[-1].set_xticks(list(range(10)))
                     cur_ax[-1].set_xlabel('Digit')
                     cur_ax[-1].set_title('Probabilities')
 

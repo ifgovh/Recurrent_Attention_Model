@@ -35,10 +35,10 @@ def load_summaries(fname, summaries=[]):
     #warnings.warn('Only implemented for scalar summaries.', Warning)
 
     if not os.path.isfile(fname):
-        print('\n<<{}>> is not a file.'.format(fname))
+        print(('\n<<{}>> is not a file.'.format(fname)))
         return
     else:
-        print('\nLoading <<{}>> event file . . .'.format(fname)),
+        print(('\nLoading <<{}>> event file . . .'.format(fname)), end=' ')
 
     # return dict of DataFrames
     df = {}
@@ -56,9 +56,9 @@ def load_summaries(fname, summaries=[]):
     for summary in summaries:
         try:
             df[summary] = pd.DataFrame(events.Scalars(summary))
-            print('{:30s} [loaded]'.format(summary))
+            print(('{:30s} [loaded]'.format(summary)))
         except:
-            print('{:30s} [not found]'.format(summary))
+            print(('{:30s} [not found]'.format(summary)))
 
     return df
 
@@ -75,14 +75,14 @@ def save_summaries(df, dir='.', prefix=''):
     if not os.path.exists(dir):
         os.mkdir(dir)
 
-    for sname in df.keys():
+    for sname in list(df.keys()):
 
         try:
             fname = os.path.join(dir, '{}_{}.csv'.format(prefix, sname))
             df[sname].to_csv(fname)
-            print('{:30s} [saved]'.format(fname))
+            print(('{:30s} [saved]'.format(fname)))
         except:
-            print('{:30s} [failed]'.format(fname))
+            print(('{:30s} [failed]'.format(fname)))
 
 def export_summaries(summaries=[], dir='.', expr='summaries/val', output_dir='.'):
     """Given a parent directory containing summaries exports all of them to .csv.

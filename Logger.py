@@ -57,11 +57,11 @@ class Logger(object):
         self.writers[writer_id].add_summary(summaries, self.step)
 
         if self.n_verbose and self.step % self.n_verbose == 0:
-            print '\n------ Step {} ------'.format(self.step)
+            print('\n------ Step {} ------'.format(self.step))
 
-            for key in self.eval_ops.keys():
+            for key in list(self.eval_ops.keys()):
                 val = self.session.run(self.eval_ops[key], feed_dict)
-                print '{}={:3.4f}\t'.format(key, val),
+                print('{}={:3.4f}\t'.format(key, val), end=' ')
 
     def save(self):
         """Saves model checkpoint."""
@@ -70,7 +70,7 @@ class Logger(object):
     def restore(self, checkpoint_dir):
         ckpt = tf.train.get_checkpoint_state(checkpoint_dir)
         if ckpt and ckpt.model_checkpoint_path:
-            print ckpt
+            print(ckpt)
             self.saver.restore(self.session, ckpt.model_checkpoint_path)
 
 
@@ -86,6 +86,6 @@ def create_directories(log_dir):
         os.mkdir(checkpoint_path)
         os.mkdir(summary_path)
 
-        print '\n\nLogging to <<{}>>.\n\n'.format(log_dir)
+        print('\n\nLogging to <<{}>>.\n\n'.format(log_dir))
 
     return checkpoint_path, summary_path

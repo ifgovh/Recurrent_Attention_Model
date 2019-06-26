@@ -3,6 +3,7 @@ import numpy as np
 import os
 from tqdm import tqdm
 from data_generator import *
+from functools import reduce
 
 distributions = tf.contrib.distributions
 
@@ -112,15 +113,15 @@ def build_convnet(input_ph, layers, d_fc=None):
         weights   -- (dict) layer_nr: weight
         biases    -- (dict) layer_nr: bias
     """
-    n_layers = len(layers.keys())
-    print '\n\n[building convnet]: {} layers, {} units in fully-connected\n'.format(n_layers, d_fc)
+    n_layers = len(list(layers.keys()))
+    print('\n\n[building convnet]: {} layers, {} units in fully-connected\n'.format(n_layers, d_fc))
 
     w, b = {}, {}
 
     h = input_ph
 
     for l in range(n_layers):
-        print 'Layer {} -- {} filters, {}x{}'.format(l, layers[l][0], layers[l][1], layers[l][1])
+        print('Layer {} -- {} filters, {}x{}'.format(l, layers[l][0], layers[l][1], layers[l][1]))
         h, w[l], b[l] = conv2d(x=h,
                                n_filters=layers[l][0],
                                kernel_size=(layers[l][1], layers[l][1]),
@@ -141,9 +142,9 @@ def build_convnet(input_ph, layers, d_fc=None):
 def evaluate(sess, images_ph, labels_ph, softmax, mnist, config, task):
     """Return current test and validation accuracy."""
 
-    print 'Evaluating on {} task ({}x{}, {} distractors) using {} glimpses (at {} scales)'.format(
+    print('Evaluating on {} task ({}x{}, {} distractors) using {} glimpses (at {} scales)'.format(
         task, config.new_size, config.new_size, config.n_distractors,
-        config.num_glimpses, config.n_patches)
+        config.num_glimpses, config.n_patches))
 
     # Evaluation
     test_acc = []
@@ -156,7 +157,7 @@ def evaluate(sess, images_ph, labels_ph, softmax, mnist, config, task):
         num_samples = steps_per_epoch * config.batch_size
         # loc_net.sampling = True
 
-        for test_step in tqdm(xrange(steps_per_epoch)):
+        for test_step in tqdm(range(steps_per_epoch)):
 
             images, labels = dataset.next_batch(config.batch_size)
             images = images.reshape((-1, config.original_size, config.original_size, 1))
@@ -199,10 +200,10 @@ def evaluate(sess, images_ph, labels_ph, softmax, mnist, config, task):
         acc = correct_cnt / float(num_samples)
 
         if k == 0:
-            print '\nVal accuracy\t{:4.4f} ({:4.4f} error)'.format(100 * acc, 100 - 100 * acc)
+            print('\nVal accuracy\t{:4.4f} ({:4.4f} error)'.format(100 * acc, 100 - 100 * acc))
             val_acc = acc
         else:
-            print 'Test accuracy\t{:4.4f} ({:4.4f} error)\n'.format(100 * acc, 100 - 100 * acc)
+            print('Test accuracy\t{:4.4f} ({:4.4f} error)\n'.format(100 * acc, 100 - 100 * acc))
             test_acc = acc
 
     return test_acc, val_acc
@@ -212,15 +213,15 @@ def evaluate_loc(sess, images_ph, labels_ph, locations_ph, has_label, softmax, m
     """Returns current test and validation accuracy."""
 
     if config.color_digits or config.color_noise:
-        print 'Evaluating on {} task -- {}x{}, color digits: {}, color noise: {}\n' \
+        print('Evaluating on {} task -- {}x{}, color digits: {}, color noise: {}\n' \
               'Model: {} patches, {} glimpses, glimpse size {}x{}\n\n\n'.format(
             task, config.new_size, config.new_size, config.color_digits, config.color_noise,
             config.n_patches, config.num_glimpses, config.glimpse_size, config.glimpse_size
-        )
+        ))
     else:
-        print 'Evaluating on {} task ({}x{}, {} distractors) using {} glimpses (at {} scales)'.format(
+        print('Evaluating on {} task ({}x{}, {} distractors) using {} glimpses (at {} scales)'.format(
             task, config.new_size, config.new_size, config.n_distractors,
-            config.num_glimpses, config.n_patches)
+            config.num_glimpses, config.n_patches))
 
     # Evaluation
     test_acc = []
@@ -234,7 +235,7 @@ def evaluate_loc(sess, images_ph, labels_ph, locations_ph, has_label, softmax, m
         num_samples = steps_per_epoch * config.batch_size
         # loc_net.sampling = True
 
-        for test_step in tqdm(xrange(steps_per_epoch)):
+        for test_step in tqdm(range(steps_per_epoch)):
 
             images, labels = dataset.next_batch(config.batch_size)
             images = images.reshape((-1, config.original_size, config.original_size, 1))
@@ -283,11 +284,11 @@ def evaluate_loc(sess, images_ph, labels_ph, locations_ph, has_label, softmax, m
         acc = correct_cnt / float(num_samples)
 
         if k == 0:
-            print 'Test accuracy\t{:4.4f} ({:4.4f} error)\n'.format(100 * acc, 100 - 100 * acc)
+            print('Test accuracy\t{:4.4f} ({:4.4f} error)\n'.format(100 * acc, 100 - 100 * acc))
             test_acc = acc
             val_acc = 0.0
         else:
-            print 'Val accuracy\t{:4.4f} ({:4.4f} error)\n'.format(100 * acc, 100 - 100 * acc)
+            print('Val accuracy\t{:4.4f} ({:4.4f} error)\n'.format(100 * acc, 100 - 100 * acc))
             test_acc = acc
 
     return test_acc, val_acc
@@ -320,14 +321,14 @@ def evaluate_repeatedly(ram=None, data=[], task='translated', n_reps=5, verbose=
         errors['val'].append(100 - 100 * val)
 
     if verbose:
-        print '\b-- Results ({} reps) ..\nTest:\t{:4.4f} +- {:4.4f} (error {:4.4f} +- {:4.4f})\n' \
+        print('\b-- Results ({} reps) ..\nTest:\t{:4.4f} +- {:4.4f} (error {:4.4f} +- {:4.4f})\n' \
               'Val:\t{:4.4f} +- {:4.4f} (error {:4.4f} +- {:4.4f})\n'.format(
             n_reps,
             np.mean(accuracies['test']), np.std(accuracies['test']),
             np.mean(errors['test']), np.std(errors['test']),
             np.mean(accuracies['val']), np.std(accuracies['val']),
             np.mean(errors['val']), np.std(errors['val'])
-        )
+        ))
 
     return accuracies, errors
 
@@ -377,13 +378,13 @@ def count_parameters(sess):
     n_params = 0
 
     for k, v in zip(variables_names, values):
-        print '-'.center(140, '-')
-        print '{:60s}\t\tShape: {:20s}\t{:20} parameters'.format(k, v.shape, v.size)
+        print('-'.center(140, '-'))
+        print('{:60s}\t\tShape: {:20s}\t{:20} parameters'.format(k, v.shape, v.size))
 
         n_params += v.size
 
-    print '-'.center(140, '-')
-    print 'Total # parameters:\t\t{}\n\n'.format(n_params)
+    print('-'.center(140, '-'))
+    print('Total # parameters:\t\t{}\n\n'.format(n_params))
 
     return n_params
 

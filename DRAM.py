@@ -8,12 +8,12 @@ import tensorflow as tf
 import numpy as np
 import os
 
-from GlimpseNetwork import GlimpseNetwork, LocNet
-from Logger         import Logger
-from src.custom_multiRNNCell import MyMultiRNNCell
-from src.utils      import *
-from src.fig        import plot_glimpses, plot_trajectories
-from data_generator import *
+from .GlimpseNetwork import GlimpseNetwork, LocNet
+from .Logger         import Logger
+from .src.custom_multiRNNCell import MyMultiRNNCell
+from .src.utils      import *
+from .src.fig        import plot_glimpses, plot_trajectories
+from .data_generator import *
 
 # tensorflow version switch
 rnn_cell    = tf.contrib.rnn
@@ -50,7 +50,7 @@ class DRAM(object):
 
         # context network to initialize
         if CONTEXT:
-            print '\n\n\n-- CONTEXT NETWORK USED --\n\n\n'
+            print('\n\n\n-- CONTEXT NETWORK USED --\n\n\n')
             self.coarse_input    = tf.image.resize_bilinear(
                 self.images_ph, [config.coarse_size, config.coarse_size], name='resize')
             self.context_network, _, _ = build_convnet(self.coarse_input, layers=config.conv_layers,
@@ -199,7 +199,7 @@ class DRAM(object):
 
         self.training_steps_per_epoch    = self.config.N // self.config.batch_size
 
-        print 'Training steps / epoch {}'.format(self.training_steps_per_epoch)
+        print('Training steps / epoch {}'.format(self.training_steps_per_epoch))
 
         self.starter_learning_rate  = self.config.lr_start
         # decay per training epoch
@@ -211,7 +211,7 @@ class DRAM(object):
                                         staircase=True)
         self.learning_rate          = tf.maximum(self.learning_rate, self.config.lr_min)
         self.optimizer              = tf.train.AdamOptimizer(self.learning_rate)
-        self.train_op               = self.optimizer.apply_gradients(zip(self.grads, self.var_list),
+        self.train_op               = self.optimizer.apply_gradients(list(zip(self.grads, self.var_list)),
                                                                global_step=self.global_step)
 
     def setup_logger(self):
@@ -255,22 +255,22 @@ class DRAM(object):
         """
         # verbose
         if self.config.color_digits or self.config.color_noise:
-         print '\n\n\n------------ Starting training ------------  \nTask: {} -- {}x{}, color digits: {}, color noise: {}\n' \
+         print('\n\n\n------------ Starting training ------------  \nTask: {} -- {}x{}, color digits: {}, color noise: {}\n' \
                 'Model: {} patches, {} glimpses, glimpse size {}x{}\n\n\n'.format(
               task, self.config.new_size, self.config.new_size, self.config.color_digits, self.config.color_noise,
               self.config.n_patches, self.config.num_glimpses, self.config.glimpse_size, self.config.glimpse_size
-                )
+                ))
         else:
-            print '\n\n\n------------ Starting training ------------  \nTask: {} -- {}x{} with {} distractors\n' \
+            print('\n\n\n------------ Starting training ------------  \nTask: {} -- {}x{} with {} distractors\n' \
                     'Model: {} patches, {} glimpses, glimpse size {}x{}\n\n\n'.format(
                   task, self.config.new_size, self.config.new_size, self.config.n_distractors,
                   self.config.n_patches, self.config.num_glimpses, self.config.glimpse_size, self.config.glimpse_size
-                    )
+                    ))
 
         self.task = task
         self.setup_logger() # add logger
 
-        for i in xrange(self.config.step):
+        for i in range(self.config.step):
 
             images, labels = data.train.next_batch(self.config.batch_size)
             images         = images.reshape((-1, self.config.original_size, self.config.original_size,1))
@@ -316,7 +316,7 @@ class DRAM(object):
                 # save model
                 self.logger.save()
 
-                print '\n==== Evaluation: (step {}) ===='.format(i)
+                print('\n==== Evaluation: (step {}) ===='.format(i))
                 self.evaluate(data, task=self.task)
 
     def evaluate(self, data=[], task='mnist'):
@@ -333,14 +333,14 @@ class DRAM(object):
         """Restores model from <<checkpoint_dir>>. Assumes sub-folder 'checkpoints' in directory."""
 
         folder = os.path.join(checkpoint_dir,'checkpoints')
-        print '\nLoading model from <<{}>>.\n'.format(folder)
+        print('\nLoading model from <<{}>>.\n'.format(folder))
 
         self.saver       = tf.train.Saver(self.var_list)
 
         ckpt = tf.train.get_checkpoint_state(folder)
 
         if ckpt and ckpt.model_checkpoint_path:
-            print ckpt
+            print(ckpt)
             self.saver.restore(self.session, ckpt.model_checkpoint_path)
 
     def visualize(self, config=[], data=[], task={'variant': 'mnist', 'width': 60, 'n_distractors': 4},
@@ -355,7 +355,7 @@ class DRAM(object):
                 N               (int) number of plots
                 seed            (int) random if 'None', seed='seed' o.w.
         """
-        print '\n\nGenerating visualizations ....',
+        print('\n\nGenerating visualizations ....', end=' ')
 
         np.random.seed(seed)
 
@@ -384,7 +384,7 @@ class DRAM(object):
                       lim=config.distractor_range,
                        width=task['width'], height=task['width'], norm=True)
         else:
-            print 'Using original MNIST data.'
+            print('Using original MNIST data.')
 
         # data for plotting
         feed_dict   = {self.images_ph: X, self.labels_ph: Y}

@@ -4,7 +4,7 @@ import  re
 import  argparse
 import  sys
 import  glob
-import  cPickle as pickle
+import  pickle as pickle
 import  numpy               as np
 import  pandas              as pd
 import  matplotlib.pyplot   as plt
@@ -37,13 +37,13 @@ if __name__ == '__main__':
     for i, file in enumerate(sorted(f)):
 
         # % labels
-        print file
+        print(file)
         fname = file.split('_')[0]
 
         d = pickle.load(open(FLAGS.file, 'rb'))
 
         # plot performance for all glimpses
-        for n in d.keys():
+        for n in list(d.keys()):
 
             ax.errorbar(n, np.mean(d[n]['test']), yerror=np.std(d[n]['test']),
                         color=colors[i], labels=fname)

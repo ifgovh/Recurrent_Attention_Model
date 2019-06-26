@@ -57,10 +57,10 @@ def smooth_conv(x,window_len=11,window='hanning'):
     """
 
     if x.ndim != 1:
-        raise ValueError, "smooth only accepts 1 dimension arrays."
+        raise ValueError("smooth only accepts 1 dimension arrays.")
 
     if x.size < window_len:
-        raise ValueError, "Input vector needs to be bigger than window size."
+        raise ValueError("Input vector needs to be bigger than window size.")
 
 
     if window_len<3:
@@ -68,7 +68,7 @@ def smooth_conv(x,window_len=11,window='hanning'):
 
 
     if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
-        raise ValueError, "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
+        raise ValueError("Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
 
 
     s=np.r_[x[window_len-1:0:-1],x,x[-2:-window_len-1:-1]]
@@ -121,7 +121,7 @@ if __name__ == '__main__':
     # read in data
     f = glob.glob(os.path.join(FLAGS.dir,'*accuracy.csv'))
 
-    print '\n{} files found.\n'.format(len(f))
+    print('\n{} files found.\n'.format(len(f)))
 
     # init axes
     fig, cur_ax         = plt.subplots(1,1)
@@ -143,7 +143,7 @@ if __name__ == '__main__':
         start       = file_name.find('labels=') + 7
         end         = file_name.find('_accuracy')
         file_name   =  file_name[start:end]
-        print file_name
+        print(file_name)
 
         # increase color intensity
         #alpha += alpha_step
@@ -157,7 +157,7 @@ if __name__ == '__main__':
         start_time  = walltime[0]
 
         if i == 0:
-            print('-- Plotting the first {} updates'.format(X[-1]))
+            print(('-- Plotting the first {} updates'.format(X[-1])))
 
 
         if FLAGS.smooth:
@@ -210,8 +210,8 @@ if __name__ == '__main__':
 
         # print number of steps
         t = abs(start_time - walltime[n_steps])
-        print('{:30s}\t{:6d} examples ({:6d})\t\t{:.2f}x speed-up\t{}'.format(
-            file_name, X[n_steps], n_steps, base_speed / float(n_steps), t /60. ))
+        print(('{:30s}\t{:6d} examples ({:6d})\t\t{:.2f}x speed-up\t{}'.format(
+            file_name, X[n_steps], n_steps, base_speed / float(n_steps), t /60. )))
 
 
 

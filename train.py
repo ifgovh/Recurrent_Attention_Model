@@ -12,10 +12,10 @@ import numpy as np
 import argparse
 from datetime import datetime
 import pickle
-from RAM import RAM
+from .RAM import RAM
 # from DRAM import DRAM
 # from DRAM_loc import DRAMl
-from config import Config
+from .config import Config
 
 from tensorflow.examples.tutorials.mnist import input_data
 
@@ -51,13 +51,13 @@ if __name__ == '__main__':
     time_str = datetime.now().strftime('%H%M%S')
 
     if FLAGS.model == 'ram':
-        from config import Config
+        from .config import Config
     elif FLAGS.model == 'dram':
-        from config_dram import Config
+        from .config_dram import Config
     elif FLAGS.model == 'dram_loc':
-        from config_dram import Config
+        from .config_dram import Config
     else:
-        print 'Unknown model {}'.format(FLAGS.model)
+        print(('Unknown model {}'.format(FLAGS.model)))
         exit()
 
     # parameters
@@ -80,7 +80,7 @@ if __name__ == '__main__':
         config.loc_std, time_str, config.use_context, config.lr_start, config.lr_min,
         config.p_labels)
 
-    print '\n\nFlags: {}\n\n'.format(FLAGS)
+    print(('\n\nFlags: {}\n\n'.format(FLAGS)))
     # ------------------------------
 
     # data
@@ -93,16 +93,16 @@ if __name__ == '__main__':
     config.N = mnist.train.num_examples  # number of training examples
 
     if FLAGS.model == 'ram':
-        print '\n\n\nTraining RAM\n\n\n'
+        print('\n\n\nTraining RAM\n\n\n')
         model = RAM(config, logdir=FLAGS.logdir)
     elif FLAGS.model == 'dram':
-        print '\n\n\nTraining DRAM\n\n\n'
+        print('\n\n\nTraining DRAM\n\n\n')
         model = DRAM(config, logdir=FLAGS.logdir)
     elif FLAGS.model == 'dram_loc':
-        print '\n\n\nTraining DRAM with location ground truth\n\n\n'
+        print('\n\n\nTraining DRAM with location ground truth\n\n\n')
         model = DRAMl(config, logdir=FLAGS.logdir)
     else:
-        print 'Unknown model {}'.format(FLAGS.model)
+        print(('Unknown model {}'.format(FLAGS.model)))
         exit()
 
     # load if specified

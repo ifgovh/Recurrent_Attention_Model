@@ -16,7 +16,7 @@
 
 import  numpy        as np
 import  tensorflow   as tf
-from    src.utils        import *
+from    .src.utils        import *
 
 class GlimpseNetwork(object):
     """ Takes image and previous glimpse location and outputs feature vector."""

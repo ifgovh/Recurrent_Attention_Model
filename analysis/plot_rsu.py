@@ -59,7 +59,7 @@ def RSU(folder, n=10):
         start       = file_name.find('labels=') + 7
         end         = file_name.find('_accuracy')
         file_name   = file_name[start:end]
-        print '\n-- {} --'.format(file_name)
+        print('\n-- {} --'.format(file_name))
 
 
         # create dict entry
@@ -75,7 +75,7 @@ def RSU(folder, n=10):
         # anchors
         start_time  = walltime[0]
         N           = X[-1]*FLAGS.batch_size # examples
-        print N
+        print(N)
 
 
         if FLAGS.smooth:
@@ -105,8 +105,8 @@ def RSU(folder, n=10):
             RSU[file_name][3].append(rsu)
             RSU[file_name][4].append(1 - float(t_p) / base_time[k])
 
-            print('threshold: {:.2f}\t{:6d} examples ({:<5.2f}%)\t{:>.2f}x SU\twalltime: {:<5.4f}\tdtime: {:>.2f}\tftime: {:>.2f}'.format(
-                th, n_p, n_p * 100 / float(N), rsu, t_p / 60.**2, d_t, 1 - float(t_p) /base_time[k]  ))
+            print(('threshold: {:.2f}\t{:6d} examples ({:<5.2f}%)\t{:>.2f}x SU\twalltime: {:<5.4f}\tdtime: {:>.2f}\tftime: {:>.2f}'.format(
+                th, n_p, n_p * 100 / float(N), rsu, t_p / 60.**2, d_t, 1 - float(t_p) /base_time[k]  )))
 
 
     return thresholds, RSU
@@ -148,7 +148,7 @@ if __name__ == '__main__':
     #alpha, alpha_step   = 0, 1.0/len(rsu.keys()) # how fast to increase transparency
 
     # get line colors
-    cm_subsection = np.linspace(0, 1, len(rsu.keys()))
+    cm_subsection = np.linspace(0, 1, len(list(rsu.keys())))
     colors = [ cm.Reds(x) for x in cm_subsection ]
 
     # mark fixed threshold

@@ -8,12 +8,12 @@ import tensorflow as tf
 import numpy as np
 import os
 
-from Logger         import Logger
-from src.losses     import location_loss
-from src.custom_multiRNNCell import MyMultiRNNCell
-from src.utils      import *
-from src.fig        import plot_glimpses, plot_trajectories
-from data_generator import *
+from .Logger         import Logger
+from .src.losses     import location_loss
+from .src.custom_multiRNNCell import MyMultiRNNCell
+from .src.utils      import *
+from .src.fig        import plot_glimpses, plot_trajectories
+from .data_generator import *
 
 # tensorflow version switch
 rnn_cell    = tf.contrib.rnn
@@ -28,11 +28,11 @@ class DRAMl(object):
         self.logdir    = logdir
 
         if self.config.convnet:
-            print 'Glimpse sensor is Convnet.'
-            from ConvNet import GlimpseNetwork, LocNet          # glimpse net is conv net
+            print('Glimpse sensor is Convnet.')
+            from .ConvNet import GlimpseNetwork, LocNet          # glimpse net is conv net
         else:
-            print 'Glimpse sensor is fully connected.'
-            from GlimpseNetwork import GlimpseNetwork, LocNet   # glimpse net if fully connected
+            print('Glimpse sensor is fully connected.')
+            from .GlimpseNetwork import GlimpseNetwork, LocNet   # glimpse net if fully connected
 
         # ---- ensure correct parameters ----
         if self.config.color_digits or self.config.color_noise:
@@ -63,7 +63,7 @@ class DRAMl(object):
 
         # context network to initialize
         if config.use_context:
-            print 'Context network used.'
+            print('Context network used.')
             with tf.variable_scope('context_network'):
                 self.coarse_input    = tf.image.resize_bilinear(
                     self.images_ph, [config.coarse_size, config.coarse_size], name='resize')
@@ -230,7 +230,7 @@ class DRAMl(object):
         self.learning_rate          = tf.maximum(self.learning_rate, self.config.lr_min)
 
         self.optimizer              = tf.train.AdamOptimizer(self.learning_rate)
-        self.train_op               = self.optimizer.apply_gradients(zip(self.grads, self.var_list),
+        self.train_op               = self.optimizer.apply_gradients(list(zip(self.grads, self.var_list)),
                                                                global_step=self.global_step)
 
     def decay_locloss(self):
@@ -239,7 +239,7 @@ class DRAMl(object):
         self.gamma_start            = self.config.gamma_start  # weight for location loss
         self.gamma_min              = self.config.gamma_min    # weight for location loss
 
-        print '-- decaying gamma from {} -- {}'.format(self.gamma_start, self.gamma_min)
+        print('-- decaying gamma from {} -- {}'.format(self.gamma_start, self.gamma_min))
 
         self.gamma                  = tf.train.exponential_decay(
                                         self.gamma_start,
@@ -293,17 +293,17 @@ class DRAMl(object):
         """
         # verbose
         if self.config.color_digits or self.config.color_noise:
-         print '\n\n\n------------ Starting training ------------  \nTask: {} -- {}x{}, color digits: {}, color noise: {}\n' \
+         print('\n\n\n------------ Starting training ------------  \nTask: {} -- {}x{}, color digits: {}, color noise: {}\n' \
                 'Model: {} patches, {} glimpses, glimpse size {}x{}\n\n\n'.format(
               task, self.config.new_size, self.config.new_size, self.config.color_digits, self.config.color_noise,
               self.config.n_patches, self.config.num_glimpses, self.config.glimpse_size, self.config.glimpse_size
-                )
+                ))
         else:
-            print '\n\n\n------------ Starting training ------------  \nTask: {} -- {}x{} with {} distractors\n' \
+            print('\n\n\n------------ Starting training ------------  \nTask: {} -- {}x{} with {} distractors\n' \
                     'Model: {} patches, {} glimpses, glimpse size {}x{}\n\n\n'.format(
                   task, self.config.new_size, self.config.new_size, self.config.n_distractors,
                   self.config.n_patches, self.config.num_glimpses, self.config.glimpse_size, self.config.glimpse_size
-                    )
+                    ))
 
         self.task = task
         self.setup_logger() # add logger
@@ -319,7 +319,7 @@ class DRAMl(object):
 
         # ---------------------
 
-        for i in xrange(self.config.step):
+        for i in range(self.config.step):
 
             images, labels = data.train.next_batch(self.config.batch_size)
             images         = images.reshape((-1, self.config.original_size, self.config.original_size,1))
@@ -376,7 +376,7 @@ class DRAMl(object):
                 # save model
                 self.logger.save()
 
-                print '\n==== Evaluation: (step {}) ===='.format(i)
+                print('\n==== Evaluation: (step {}) ===='.format(i))
                 self.evaluate(data, task=self.task)
 
     def evaluate(self, data=[], task='mnist'):
@@ -393,14 +393,14 @@ class DRAMl(object):
         """Restores model from <<checkpoint_dir>>. Assumes sub-folder 'checkpoints' in directory."""
 
         folder = os.path.join(checkpoint_dir,'checkpoints')
-        print '\nLoading model from <<{}>>.\n'.format(folder)
+        print('\nLoading model from <<{}>>.\n'.format(folder))
 
         self.saver       = tf.train.Saver(self.var_list)
 
         ckpt = tf.train.get_checkpoint_state(folder)
 
         if ckpt and ckpt.model_checkpoint_path:
-            print ckpt
+            print(ckpt)
             self.saver.restore(self.session, ckpt.model_checkpoint_path)
 
     def visualize(self, config=[], data=[], task={'variant': 'mnist', 'width': 60, 'n_distractors': 4},
@@ -415,7 +415,7 @@ class DRAMl(object):
                 N               (int) number of plots
                 seed            (int) random if 'None', seed='seed' o.w.
         """
-        print '\n\nGenerating visualizations ....',
+        print('\n\nGenerating visualizations ....', end=' ')
 
         np.random.seed(seed)
 
@@ -445,7 +445,7 @@ class DRAMl(object):
                         color_noise=config.color_noise,
                        width=task['width'], height=task['width'], norm=True)
         else:
-            print 'Using original MNIST data.'
+            print('Using original MNIST data.')
 
         has_labels = np.ones((X.shape[0],)).astype(np.int32)
 

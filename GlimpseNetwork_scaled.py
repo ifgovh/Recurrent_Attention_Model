@@ -25,8 +25,8 @@ Partly inspired by https://github.com/zhongwen/RAM/blob/master/glimpse.py
 
 import  numpy        as np
 import  tensorflow   as tf
-from    config       import Config
-from    src.utils    import *
+from    .config       import Config
+from    .src.utils    import *
 
 class GlimpseNetwork(object):
     """ Takes image and previous glimpse location and outputs feature vector."""
@@ -85,19 +85,19 @@ class GlimpseNetwork(object):
         loc = tf.stop_gradient(loc)
 
 
-        print '\n\nLoc {}'.format(loc)
+        print('\n\nLoc {}'.format(loc))
 
         loc_x, loc_y, scale = tf.split(loc,num_or_size_splits=3, axis=1)
         location            = tf.concat([loc_x, loc_y], axis=1)
 
-        print 'loc x {}\nloc y {}\nscale {}'.format(loc_x, loc_y, scale)
+        print('loc x {}\nloc y {}\nscale {}'.format(loc_x, loc_y, scale))
 
         # extract k glimpses (N x W x H x C)
         # each glimpse covers a larger field
         self.scaled_glimpse_size    = tf.tile(self.glimpse_size*scale,[1,2])
         self.scaled_glimpse_size    = tf.cast(self.scaled_glimpse_size, tf.int32)
 
-        print '-- Shapes: glimpse size {}\n-- location {}\n\n'.format(self.scaled_glimpse_size.get_shape().as_list(), location.get_shape().as_list())
+        print('-- Shapes: glimpse size {}\n-- location {}\n\n'.format(self.scaled_glimpse_size.get_shape().as_list(), location.get_shape().as_list()))
 
         glimpses        = []
         glimpse_img     = []
@@ -110,7 +110,7 @@ class GlimpseNetwork(object):
             #lower, upper    = location_bounds(glimpse_size, self.original_size)
             #loc             = tf.clip_by_value(loc,lower,upper)
 
-            print '[debug:] Glimpse {}, size {}'.format(glimpseI, self.scaled_glimpse_size)
+            print('[debug:] Glimpse {}, size {}'.format(glimpseI, self.scaled_glimpse_size))
 
             glimpse = tf.image.extract_glimpse(self.images_ph,
                                                 self.scaled_glimpse_size,

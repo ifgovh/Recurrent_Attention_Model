@@ -38,7 +38,7 @@ def random_search(architecture='dram', task='translated', grid={}, k=5, config=N
     :return:    results         (dict) accuracy for each combination
     """
 
-    print '\n\nModel {}\n\n'.format(architecture)
+    print('\n\nModel {}\n\n'.format(architecture))
 
     # init
     results         = {}
@@ -62,10 +62,10 @@ def random_search(architecture='dram', task='translated', grid={}, k=5, config=N
         config.bandwidth           = config.glimpse_size**2
 
 
-        print '\n\n---- Combination #{} ----\n\n'.format(i)
-        print 'Num glimpses:\t{}'.format(config.num_glimpses)
-        print 'Glimpse size:\t{}x{}'.format(config.glimpse_size,config.glimpse_size)
-        print 'Loc std:\t{}\n'.format(config.loc_std)
+        print('\n\n---- Combination #{} ----\n\n'.format(i))
+        print('Num glimpses:\t{}'.format(config.num_glimpses))
+        print('Glimpse size:\t{}x{}'.format(config.glimpse_size,config.glimpse_size))
+        print('Loc std:\t{}\n'.format(config.loc_std))
 
         cur_params = (config.num_glimpses, config.loc_std, config.glimpse_size)
 
@@ -84,7 +84,7 @@ def random_search(architecture='dram', task='translated', grid={}, k=5, config=N
         elif architecture == 'dram':
             model = DRAM(config, logdir=logdir)
         else:
-            print 'Unknown model {}'.format(architecture)
+            print('Unknown model {}'.format(architecture))
             exit()
 
         # train model
@@ -93,14 +93,14 @@ def random_search(architecture='dram', task='translated', grid={}, k=5, config=N
         # evaluate
         test, val = model.evaluate(data=mnist, task=task)
 
-        print '\n\nResults:\nTest:\t{}\nVal:\t{}'.format(test,val)
+        print('\n\nResults:\nTest:\t{}\nVal:\t{}'.format(test,val))
 
         # store
         results[cur_params] = [test,val]
 
         # update best score
         if test > best_score:
-            print 'Best params: {}\tScore: {}'.format(cur_params, test)
+            print('Best params: {}\tScore: {}'.format(cur_params, test))
             results['best_params']  = cur_params
             best_score              = test
 
@@ -120,10 +120,10 @@ if __name__ == '__main__':
     # search
     results = random_search(architecture='ram', task='translated', grid=grid, k=8, config=config)
 
-    print '\n\n{}\n\n'.format(results)
+    print('\n\n{}\n\n'.format(results))
 
     # save results
     path = os.path.join('./parameter_search/results.p')
 
     pickle.dump(results, open(path, 'wb'))
-    print 'Saved results to <<{}>>'.format(path)
+    print('Saved results to <<{}>>'.format(path))

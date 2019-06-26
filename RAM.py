@@ -8,11 +8,11 @@ import tensorflow as tf
 import numpy as np
 import os
 
-from GlimpseNetwork import GlimpseNetwork, LocNet
-from Logger import Logger
-from data_generator import *
-from src.utils import *
-from src.fig import plot_glimpses, plot_trajectories
+from .GlimpseNetwork import GlimpseNetwork, LocNet
+from .Logger import Logger
+from .data_generator import *
+from .src.utils import *
+from .src.fig import plot_glimpses, plot_trajectories
 
 # tensorflow version switch
 rnn_cell = tf.contrib.rnn
@@ -180,7 +180,7 @@ class RAM(object):
             staircase=True)
         self.learning_rate = tf.maximum(self.learning_rate, self.config.lr_min)
         self.optimizer = tf.train.AdamOptimizer(self.learning_rate)
-        self.train_op = self.optimizer.apply_gradients(zip(self.grads, self.var_list),
+        self.train_op = self.optimizer.apply_gradients(list(zip(self.grads, self.var_list)),
                                                        global_step=self.global_step)
 
     def setup_logger(self):
@@ -221,16 +221,16 @@ class RAM(object):
             data    -- data set object (.train, .test, .validation), cf mnist
         """
         # verbose
-        print '\n\n\n------------ Starting training ------------  \nTask: {} -- {}x{} with {} distractors\n' \
+        print('\n\n\n------------ Starting training ------------  \nTask: {} -- {}x{} with {} distractors\n' \
               'Model: {} patches, {} glimpses, glimpse size {}x{}\n\n\n'.format(
             task, self.config.new_size, self.config.new_size, self.config.n_distractors,
             self.config.n_patches, self.config.num_glimpses, self.config.glimpse_size, self.config.glimpse_size
-        )
+        ))
 
         self.task = task
         self.setup_logger()  # add logger
 
-        for i in xrange(self.config.step):
+        for i in range(self.config.step):
 
             images, labels = data.train.next_batch(self.config.batch_size)
             images = images.reshape((-1, self.config.original_size, self.config.original_size, 1))
@@ -262,7 +262,7 @@ class RAM(object):
             if i and i % 1000 == 0:
                 # save model
                 self.logger.save()
-                print '\n==== Evaluation: (step {}) ===='.format(i)
+                print('\n==== Evaluation: (step {}) ===='.format(i))
                 self.evaluate(data, task=self.task)
 
     def evaluate(self, data=[], task='mnist'):
@@ -279,14 +279,14 @@ class RAM(object):
         """Restores model from <<checkpoint_dir>>. Assumes sub-folder 'checkpoints' in directory."""
 
         folder = os.path.join(checkpoint_dir, 'checkpoints/')
-        print '\nLoading model from <<{}>>.\n'.format(folder)
+        print('\nLoading model from <<{}>>.\n'.format(folder))
 
         self.saver = tf.train.Saver(self.var_list)
 
         ckpt = tf.train.get_checkpoint_state(folder)
 
         if ckpt and ckpt.model_checkpoint_path:
-            print ckpt
+            print(ckpt)
             self.saver.restore(self.session, ckpt.model_checkpoint_path)
 
     def visualize(self, config=[], data=[], task={'variant': 'mnist', 'width': 60, 'n_distractors': 4},
@@ -301,7 +301,7 @@ class RAM(object):
                 N               (int) number of plots
                 seed            (int) random if 'None', seed='seed' o.w.
         """
-        print '\n\nGenerating visualizations ....',
+        print('\n\nGenerating visualizations ....', end=' ')
 
         np.random.seed(seed)
 
